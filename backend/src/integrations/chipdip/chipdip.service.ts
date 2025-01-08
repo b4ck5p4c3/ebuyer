@@ -2,7 +2,6 @@ import {Injectable} from "@nestjs/common";
 import {ItemDetailsDTO} from "../types";
 import {CustomValidationError} from "../../common/exceptions";
 import {HttpService} from "@nestjs/axios";
-import {promises as fsPromises} from "fs";
 import {ConfigService} from "@nestjs/config";
 
 @Injectable()
@@ -39,12 +38,23 @@ export class ChipdipService {
     }
 
     async parseChipdipUrl(url: string): Promise<ItemDetailsDTO> {
-        const content = (await this.httpService.axiosRef.get(url, {
+        const response = await this.httpService.axiosRef.get(url, {
             responseType: "text",
             headers: {
                 cookie: `TownId=${this.townId}`
-            }
-        })).data as string;
+            },
+            validateStatus: () => true
+        });
+
+        if (response.status === 404) {
+            throw new CustomValidationError("Item not found");
+        }
+
+        if (response.status !== 200) {
+            throw new CustomValidationError(`Wrong status from Chipdip: ${response.status}/${response.statusText}`);
+        }
+
+        const content = response.data as string;
 
         const fixedContent = content.replace(/[\n\r]/gi, " ");
 
