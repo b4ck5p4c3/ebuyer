@@ -7,3 +7,4 @@ At least for now, no specific docs aside [OpenAPI docs](backend/openapi.json)
 Supports integrations with different shops, for now:
 - [Chipdip](https://www.chipdip.ru)
 - [Radetali](https://www.radetali.ru)
+- [Krepkom](https://krepcom.ru) (with hacks for now)
