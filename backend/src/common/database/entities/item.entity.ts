@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {MONEY_DECIMAL_PLACES, MONEY_PRECISION} from "../../money";
 import {DecimalTransformer} from "../transformers/decimal.transformer";
 import Decimal from "decimal.js";
@@ -55,4 +55,7 @@ export class Item {
 
     @Column("text")
     createdBy: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
 }

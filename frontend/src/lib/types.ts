@@ -22,3 +22,12 @@ export interface ItemDTO {
     status: "created" | "canceled" | "fulfilled";
     additionalData?: object;
 }
+
+export interface ItemDetailsDTO {
+    title?: string;
+    comment?: string;
+    sku?: string;
+    imageUrl?: string;
+    itemUrl?: string;
+    price?: string;
+}

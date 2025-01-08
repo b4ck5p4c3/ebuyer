@@ -12,13 +12,16 @@ export class ItemsService {
         return new ItemsService(manager.getRepository(Item));
     }
 
-    async findAllUnfulfilledByShop(shopId: string): Promise<Item[]> {
+    async findAllUnfulfilledByShopInternalId(shopInternalId: string): Promise<Item[]> {
         return await this.itemRepository.find({
             where: {
                 shop: {
-                    id: shopId
+                    internalId: shopInternalId
                 },
                 status: ItemStatus.CREATED
+            },
+            order: {
+                createdAt: "asc"
             }
         });
     }

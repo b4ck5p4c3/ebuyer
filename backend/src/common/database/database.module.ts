@@ -3,6 +3,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {Item} from "./entities/item.entity";
 import {Shop} from "./entities/shop.entity";
+import {ApiKey} from "./entities/api-key.entity";
 
 @Module({
     imports: [
@@ -11,7 +12,7 @@ import {Shop} from "./entities/shop.entity";
             useFactory: (configService: ConfigService) => ({
                 type: "postgres",
                 url: configService.getOrThrow("DATABASE_URL"),
-                entities: [Item, Shop],
+                entities: [Item, Shop, ApiKey],
                 synchronize: true,
                 logging: process.env.NODE_ENV === "development"
             }),

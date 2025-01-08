@@ -6,6 +6,8 @@ import {LogtoAuthModule} from "./logto-auth/logto-auth.module";
 import {ShopsModule} from "./shops/shops.module";
 import {SeederModule} from "./seeder/seeder.module";
 import {ItemsModule} from "./items/items.module";
+import {ApiKeysControllerModule} from "./api-keys/api-keys-controller.module";
+import {IntegrationsModule} from "./integrations/integrations.module";
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import {ItemsModule} from "./items/items.module";
 
       ShopsModule,
       ItemsModule,
+      ApiKeysControllerModule,
+      IntegrationsModule,
       SeederModule,
 
       LogtoAuthModule

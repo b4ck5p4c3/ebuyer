@@ -28,7 +28,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Get all unfulfilled items by shop */
+        /** Get all unfulfilled items by shop */
         get: operations["ItemsController_findAllUnfulfilledByShop"];
         put?: never;
         post?: never;
@@ -47,7 +47,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Create item */
+        /** Create item */
         post: operations["ItemsController_create"];
         delete?: never;
         options?: never;
@@ -68,7 +68,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** @description Update item bought counter */
+        /** Update item bought counter */
         patch: operations["ItemsController_buyItem"];
         trace?: never;
     };
@@ -85,8 +85,60 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /** @description Cancel item */
+        /** Cancel item */
         patch: operations["ItemsController_cancelItem"];
+        trace?: never;
+    };
+    "/api/api-keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get your API keys */
+        get: operations["ApiKeysController_findMy"];
+        put?: never;
+        /** Create new API key */
+        post: operations["ApiKeysController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/api-keys/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete API key */
+        delete: operations["ApiKeysController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/integrations/chipdip/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Parse chipdip URL/SKU */
+        post: operations["ChipdipController_parse"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/auth/self": {
@@ -148,6 +200,22 @@ export interface components {
         };
         BuyItemDTO: {
             additionalBoughtCount: number;
+        };
+        ApiKeyDTO: {
+            /** Format: uuid */
+            id: string;
+            key: string;
+        };
+        EmptyResponse: Record<string, never>;
+        ParseChipdipDTO: {
+            data: string;
+        };
+        ItemDetailsDTO: {
+            title?: string;
+            sku?: string;
+            imageUrl?: string;
+            itemUrl?: string;
+            price?: string;
         };
         SelfAuthInfoDTO: {
             /** Format: uuid */
@@ -308,6 +376,128 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ItemDTO"];
+                };
+            };
+            /** @description Erroneous response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorApiResponse"];
+                };
+            };
+        };
+    };
+    ApiKeysController_findMy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiKeyDTO"][];
+                };
+            };
+            /** @description Erroneous response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorApiResponse"];
+                };
+            };
+        };
+    };
+    ApiKeysController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiKeyDTO"];
+                };
+            };
+            /** @description Erroneous response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorApiResponse"];
+                };
+            };
+        };
+    };
+    ApiKeysController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmptyResponse"];
+                };
+            };
+            /** @description Erroneous response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorApiResponse"];
+                };
+            };
+        };
+    };
+    ChipdipController_parse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseChipdipDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemDetailsDTO"];
                 };
             };
             /** @description Erroneous response */

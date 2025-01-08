@@ -13,10 +13,11 @@ import {ErrorApiResponse} from "../common/api-responses";
 import {Item, ItemStatus} from "../common/database/entities/item.entity";
 import {MONEY_PRECISION} from "../common/money";
 import {UserId} from "../auth/user-id.decorator";
-import {IsNotEmpty, IsNumberString, IsUrl, IsUUID} from "class-validator";
+import {IsNotEmpty, IsNumberString, IsOptional, IsUrl, IsUUID} from "class-validator";
 import {ShopsService} from "../shops/shops.service";
 import {Errors} from "../common/errors";
 import {CustomValidationError} from "../common/exceptions";
+import Decimal from "decimal.js";
 
 class ItemDTO {
     @ApiProperty({format: "uuid"})
@@ -54,31 +55,35 @@ class ItemDTO {
 }
 
 class CreateItemDTO {
-    @ApiProperty({format: "uuid"})
-    @IsUUID()
+    @ApiProperty()
     @IsNotEmpty()
-    shopId: string;
+    shopInternalId: string;
 
     @ApiProperty()
     @IsNotEmpty()
     title: string;
 
     @ApiProperty({required: false})
+    @IsOptional()
     comment?: string;
 
     @ApiProperty({required: false})
+    @IsOptional()
     sku?: string;
 
     @ApiProperty({required: false})
     @IsUrl()
+    @IsOptional()
     imageUrl?: string;
 
     @ApiProperty({required: false})
     @IsUrl()
+    @IsOptional()
     itemUrl?: string;
 
     @ApiProperty({required: false})
     @IsNumberString()
+    @IsOptional()
     price?: string;
 
     @ApiProperty()
@@ -86,6 +91,7 @@ class CreateItemDTO {
     requiredCount: number;
 
     @ApiProperty({required: false})
+    @IsOptional()
     additionalData?: object;
 }
 
@@ -105,21 +111,21 @@ export class ItemsController {
         return {
             id: item.id,
             title: item.title,
-            comment: item.comment,
-            sku: item.sku,
-            imageUrl: item.imageUrl,
-            itemUrl: item.itemUrl,
-            price: item.price?.toFixed(MONEY_PRECISION),
+            comment: item.comment || undefined,
+            sku: item.sku || undefined,
+            imageUrl: item.imageUrl || undefined,
+            itemUrl: item.itemUrl || undefined,
+            price: item.price?.toFixed(MONEY_PRECISION) || undefined,
             requiredCount: item.requiredCount,
             boughtCount: item.boughtCount,
             status: item.status,
-            additionalData: item.additionalData,
+            additionalData: item.additionalData || undefined,
         };
     }
 
-    @Get("shop/:shopId")
+    @Get("shop/:shopInternalId")
     @ApiOperation({
-        description: "Get all unfulfilled items by shop"
+        summary: "Get all unfulfilled items by shop"
     })
     @ApiOkResponse({
         description: "Successful response",
@@ -130,13 +136,13 @@ export class ItemsController {
         description: "Erroneous response",
         type: ErrorApiResponse
     })
-    async findAllUnfulfilledByShop(@Param("shopId") shopId: string): Promise<ItemDTO[]> {
-        return (await this.itemsService.findAllUnfulfilledByShop(shopId)).map(ItemsController.mapToDTO);
+    async findAllUnfulfilledByShop(@Param("shopInternalId") shopInternalId: string): Promise<ItemDTO[]> {
+        return (await this.itemsService.findAllUnfulfilledByShopInternalId(shopInternalId)).map(ItemsController.mapToDTO);
     }
 
     @Post()
     @ApiOperation({
-        description: "Create item"
+        summary: "Create item"
     })
     @ApiBody({
         type: CreateItemDTO
@@ -151,7 +157,11 @@ export class ItemsController {
         type: ErrorApiResponse
     })
     async create(@UserId() actorId: string, @Body() request: CreateItemDTO): Promise<ItemDTO> {
-        const shop = await this.shopsService.findById(request.shopId);
+        if (request.requiredCount <= 0) {
+            throw new CustomValidationError("Required count should be greater than zero");
+        }
+        request.requiredCount = Math.floor(request.requiredCount);
+        const shop = await this.shopsService.findByInternalId(request.shopInternalId);
         if (!shop) {
             throw new HttpException(Errors.SHOP_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
@@ -162,7 +172,7 @@ export class ItemsController {
             sku: request.sku,
             imageUrl: request.imageUrl,
             itemUrl: request.itemUrl,
-            price: request.price,
+            price: request.price ? new Decimal(request.price) : undefined,
             requiredCount: request.requiredCount,
             additionalData: request.additionalData,
             shop,
@@ -174,7 +184,7 @@ export class ItemsController {
 
     @Patch(":itemId/buy")
     @ApiOperation({
-        description: "Update item bought counter"
+        summary: "Update item bought counter"
     })
     @ApiBody({
         type: BuyItemDTO
@@ -203,7 +213,7 @@ export class ItemsController {
             if (item.boughtCount >= item.requiredCount) {
                 item.status = ItemStatus.FULFILLED;
             }
-            await this.itemsService.update(item);
+            await this.itemsService.for(manager).update(item);
             return item;
         });
 
@@ -213,7 +223,7 @@ export class ItemsController {
 
     @Patch(":itemId/cancel")
     @ApiOperation({
-        description: "Cancel item"
+        summary: "Cancel item"
     })
     @ApiOkResponse({
         description: "Successful response",
@@ -236,7 +246,7 @@ export class ItemsController {
             }
 
             item.status = ItemStatus.CANCELED;
-            await this.itemsService.update(item);
+            await this.itemsService.for(manager).update(item);
             return item;
         });
 

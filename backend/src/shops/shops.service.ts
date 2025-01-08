@@ -16,10 +16,10 @@ export class ShopsService {
         return await this.shopRepository.find();
     }
 
-    async findById(id: string): Promise<Shop | null> {
+    async findByInternalId(internalId: string): Promise<Shop | null> {
         return await this.shopRepository.findOne({
             where: {
-                id
+                internalId
             }
         });
     }

@@ -41,13 +41,12 @@
                 ]
             }
         },
-        "/api/items/shop/{shopId}": {
+        "/api/items/shop/{shopInternalId}": {
             "get": {
-                "description": "Get all unfulfilled items by shop",
                 "operationId": "ItemsController_findAllUnfulfilledByShop",
                 "parameters": [
                     {
-                        "name": "shopId",
+                        "name": "shopInternalId",
                         "required": true,
                         "in": "path",
                         "schema": {
@@ -85,7 +84,7 @@
                         "cookie": []
                     }
                 ],
-                "summary": "",
+                "summary": "Get all unfulfilled items by shop",
                 "tags": [
                     "items"
                 ]
@@ -93,7 +92,6 @@
         },
         "/api/items": {
             "post": {
-                "description": "Create item",
                 "operationId": "ItemsController_create",
                 "parameters": [],
                 "requestBody": {
@@ -133,7 +131,7 @@
                         "cookie": []
                     }
                 ],
-                "summary": "",
+                "summary": "Create item",
                 "tags": [
                     "items"
                 ]
@@ -141,7 +139,6 @@
         },
         "/api/items/{itemId}/buy": {
             "patch": {
-                "description": "Update item bought counter",
                 "operationId": "ItemsController_buyItem",
                 "parameters": [
                     {
@@ -190,7 +187,7 @@
                         "cookie": []
                     }
                 ],
-                "summary": "",
+                "summary": "Update item bought counter",
                 "tags": [
                     "items"
                 ]
@@ -198,7 +195,6 @@
         },
         "/api/items/{itemId}/cancel": {
             "patch": {
-                "description": "Cancel item",
                 "operationId": "ItemsController_cancelItem",
                 "parameters": [
                     {
@@ -237,9 +233,177 @@
                         "cookie": []
                     }
                 ],
-                "summary": "",
+                "summary": "Cancel item",
                 "tags": [
                     "items"
+                ]
+            }
+        },
+        "/api/api-keys": {
+            "get": {
+                "operationId": "ApiKeysController_findMy",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ApiKeyDTO"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erroneous response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorApiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookie": []
+                    }
+                ],
+                "summary": "Get your API keys",
+                "tags": [
+                    "api-keys"
+                ]
+            },
+            "post": {
+                "operationId": "ApiKeysController_create",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiKeyDTO"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erroneous response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorApiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookie": []
+                    }
+                ],
+                "summary": "Create new API key",
+                "tags": [
+                    "api-keys"
+                ]
+            }
+        },
+        "/api/api-keys/{id}": {
+            "delete": {
+                "operationId": "ApiKeysController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmptyResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erroneous response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorApiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookie": []
+                    }
+                ],
+                "summary": "Delete API key",
+                "tags": [
+                    "api-keys"
+                ]
+            }
+        },
+        "/api/integrations/chipdip/parse": {
+            "post": {
+                "operationId": "ChipdipController_parse",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ParseChipdipDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemDetailsDTO"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erroneous response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorApiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookie": []
+                    }
+                ],
+                "summary": "Parse chipdip URL/SKU",
+                "tags": [
+                    "integrations/chipdip"
                 ]
             }
         },
@@ -387,9 +551,8 @@
             "CreateItemDTO": {
                 "type": "object",
                 "properties": {
-                    "shopId": {
-                        "type": "string",
-                        "format": "uuid"
+                    "shopInternalId": {
+                        "type": "string"
                     },
                     "title": {
                         "type": "string"
@@ -417,7 +580,7 @@
                     }
                 },
                 "required": [
-                    "shopId",
+                    "shopInternalId",
                     "title",
                     "requiredCount"
                 ]
@@ -432,6 +595,57 @@
                 "required": [
                     "additionalBoughtCount"
                 ]
+            },
+            "ApiKeyDTO": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "key": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "key"
+                ]
+            },
+            "EmptyResponse": {
+                "type": "object",
+                "properties": {}
+            },
+            "ParseChipdipDTO": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "ItemDetailsDTO": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "sku": {
+                        "type": "string"
+                    },
+                    "imageUrl": {
+                        "type": "string"
+                    },
+                    "itemUrl": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "string"
+                    }
+                }
             },
             "SelfAuthInfoDTO": {
                 "type": "object",

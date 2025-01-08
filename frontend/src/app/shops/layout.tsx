@@ -1,26 +1,14 @@
 "use client";
 
-import React, {use, useEffect} from "react";
-import {Button} from "@/components/ui/button";
+import React, {useEffect} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {getClient, R} from "@/lib/api/client";
 import {SHOPS_QUERY_KEY} from "@/lib/cache-tags";
 import {Skeleton} from "@/components/ui/skeleton";
 import {usePathname, useRouter} from "next/navigation";
-import {ShopDTO} from "@/lib/types";
+import {ShopSelectButton} from "@/components/shop-select-butotn";
 
-function ShopSelectButton({shop}: { shop: ShopDTO }) {
-    const path = usePathname();
-    const router = useRouter();
-
-    return <Button variant={path === `/shops/${shop.internalId}` ? "secondary" : "ghost"}
-                   className={"justify-start"}
-                   onClick={() => router.push(`/shops/${shop.internalId}`)}>
-        {shop.name}
-    </Button>;
-}
-
-export default function DashboardLayout({children,}: Readonly<{ children: React.ReactNode; }>) {
+export default function ShopsLayout({children,}: Readonly<{ children: React.ReactNode; }>) {
     const client = getClient();
 
     const shops = useQuery({
