@@ -30,9 +30,9 @@ export default function ShopsLayout({children,}: Readonly<{ children: React.Reac
     }, [shops, path, router]);
 
     return (
-        <div className={"w-9/12 m-auto flex flex-row mt-5 gap-10"}>
-            <div className={"w-2/12 flex flex-col gap-2"}>
-                <span className={"text-2xl mb-3"}>Shops</span>
+        <div className={"2xl:w-9/12 2xl:m-auto 2xl:mt-5 sm:ml-10 sm:mr-10 ml-5 mr-5 flex lg:flex-row flex-col mt-5 gap-10"}>
+            <div className={"lg:w-2/12 lg:flex lg:flex-col grid xs:grid-cols-3 grid-cols-2 gap-2"}>
+                <span className={"text-2xl mb-3 lg:block hidden"}>Shops</span>
                 {
                     shops.data ? shops.data.map(shop =>
                             <ShopSelectButton shop={shop} key={shop.id}/>
@@ -43,7 +43,7 @@ export default function ShopsLayout({children,}: Readonly<{ children: React.Reac
                         </>
                 }
             </div>
-            <div className={"w-10/12 flex flex-col gap-8 mb-10"}>
+            <div className={"lg:w-10/12 flex flex-col gap-8 mb-10"}>
                 {children}
             </div>
         </div>

@@ -50,7 +50,7 @@ export function ShopItem({item, shopId}: { item: ItemDTO, shopId: string }) {
         }
     });
 
-    return <div className={"border-gray-200 rounded-md border p-2 flex flex-row justify-between"}>
+    return <div className={"border-gray-200 rounded-md border p-2 flex md:flex-row flex-col justify-between md:gap-0 gap-5"}>
         <div className={"flex flex-row gap-4"}>
             <ItemImage imageUrl={item.imageUrl}/>
             <div className={"flex flex-col justify-between"}>
@@ -62,7 +62,7 @@ export function ShopItem({item, shopId}: { item: ItemDTO, shopId: string }) {
                                    target={"_blank"}>{item.sku ?? "No SKU"}</a> : <div>{item.sku ?? "No SKU"}</div>}
             </div>
         </div>
-        <div className={"flex flex-col justify-between items-end"}>
+        <div className={"flex flex-col justify-between items-end min-h-[100px]"}>
             {item.price ? <div className={"flex flex-col items-end"}>
                 <div className={"text-sm"}>
                     <Money amount={item.price}/>&nbsp;x&nbsp;{item.requiredCount - item.boughtCount}&nbsp;=

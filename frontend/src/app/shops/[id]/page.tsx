@@ -39,9 +39,9 @@ export default function ShopPage() {
     });
 
     return <div className={"flex flex-col gap-5"}>
-        <div className={"flex flex-row justify-between"}>
-            <div><span className={"text-2xl"}>Items</span></div>
-            <div><Button onClick={() => setAddItemDialogOpen(true)}><Plus className={"w-6 h-6"}/></Button></div>
+        <div className={"flex sm:flex-row flex-col justify-between"}>
+            <div className={"sm:block hidden"}><span className={"text-2xl"}>Items</span></div>
+            <div><Button className={"w-full"} onClick={() => setAddItemDialogOpen(true)}><Plus className={"w-6 h-6"}/></Button></div>
         </div>
         <Separator/>
         <div className={"flex flex-col gap-2"}>
