@@ -63,7 +63,7 @@ export class KrepkomService {
                 return {
                     title: data.name ? String(data.name) : undefined,
                     sku,
-                    imageUrl: data.image ? `http:${String(data.image)}` : undefined,
+                    imageUrl: data.image ? `https:${String(data.image)}` : undefined,
                     itemUrl: originalUrl,
                     price: data.offers?.price ? String(data.offers?.price) : undefined
                 }
