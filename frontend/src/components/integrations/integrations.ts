@@ -1,5 +1,5 @@
 import {ItemDetailsDTO} from "@/lib/types";
-import React, {ReactNode} from "react";
+import {ReactNode} from "react";
 import {ChipdipParserFormField} from "@/components/integrations/chipdip/parser";
 import {RadetaliParserFormField} from "@/components/integrations/radetali/parser";
 import {KrepkomParserFormField} from "@/components/integrations/krepkom/parser";
