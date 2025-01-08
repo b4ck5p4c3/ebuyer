@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
             },
             {
                 hostname: "www.radetali.ru"
+            },
+            {
+                hostname: "user51928.clients-cdnnow.ru" // krepkom
             }
         ]
     }

@@ -1,14 +1,15 @@
 import {ItemDetailsDTO} from "@/lib/types";
-import React from "react";
+import React, {ReactNode} from "react";
 import {ChipdipParserFormField} from "@/components/integrations/chipdip/parser";
 import {RadetaliParserFormField} from "@/components/integrations/radetali/parser";
+import {KrepkomParserFormField} from "@/components/integrations/krepkom/parser";
 
 export interface ParserIntegrationProps {
     onParse: (details: ItemDetailsDTO) => void;
 }
 
 interface Integration {
-    parser?: React.FC<ParserIntegrationProps>
+    parser?: (props: ParserIntegrationProps) => ReactNode
 }
 
 export const INTEGRATIONS: Record<string, Integration> = {
@@ -17,5 +18,8 @@ export const INTEGRATIONS: Record<string, Integration> = {
     },
     "radetali": {
         parser: RadetaliParserFormField
+    },
+    "krepkom": {
+        parser: KrepkomParserFormField
     }
 };
