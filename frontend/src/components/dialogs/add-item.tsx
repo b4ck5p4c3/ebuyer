@@ -94,6 +94,7 @@ export function AddItemDialog({shopId, open, onClose}: DefaultDialogProps & { sh
                 <form onSubmit={form.handleSubmit(data => addItem.mutate(data))}>
                     <div className={"flex flex-col gap-4 mb-4"}>
                         {
+                            // @ts-ignore WUT?
                             INTEGRATIONS[shopId]?.parser ? <>
                                 {INTEGRATIONS[shopId].parser({
                                     onParse: (details) => {
