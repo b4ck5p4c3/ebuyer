@@ -10,26 +10,28 @@ import {
     ApiTags
 } from "@nestjs/swagger";
 import {ErrorApiResponse} from "../../common/api-responses";
-import {ChipdipService} from "./chipdip.service";
+import {RadetaliService} from "./radetali.service";
+import {IsUrl} from "class-validator";
 
-export class ParseChipdipDTO {
+export class ParseRadetaliDTO {
     @ApiProperty()
-    data: string;
+    @IsUrl()
+    url: string;
 }
 
-@Controller("/integrations/chipdip")
-@ApiTags("integrations/chipdip")
-export class ChipdipController {
+@Controller("/integrations/radetali")
+@ApiTags("integrations/radetali")
+export class RadetaliController {
 
-    constructor(private chipdipService: ChipdipService) {
+    constructor(private radetaliService: RadetaliService) {
     }
 
     @Post("parse")
     @ApiOperation({
-        summary: "Parse Chipdip URL/SKU"
+        summary: "Parse Radetali URL"
     })
     @ApiBody({
-        type: ParseChipdipDTO
+        type: ParseRadetaliDTO
     })
     @ApiOkResponse({
         description: "Successful response",
@@ -40,7 +42,7 @@ export class ChipdipController {
         description: "Erroneous response",
         type: ErrorApiResponse
     })
-    async parse(@Body() request: ParseChipdipDTO): Promise<ItemDetailsDTO> {
-        return await this.chipdipService.parseChipdipData(request.data);
+    async parse(@Body() request: ParseRadetaliDTO): Promise<ItemDetailsDTO> {
+        return await this.radetaliService.parseMaybeRadetaliUrl(request.url);
     }
 }

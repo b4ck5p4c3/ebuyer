@@ -133,8 +133,25 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Parse chipdip URL/SKU */
+        /** Parse Chipdip URL/SKU */
         post: operations["ChipdipController_parse"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/integrations/radetali/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Parse Radetali URL */
+        post: operations["RadetaliController_parse"];
         delete?: never;
         options?: never;
         head?: never;
@@ -216,6 +233,9 @@ export interface components {
             imageUrl?: string;
             itemUrl?: string;
             price?: string;
+        };
+        ParseRadetaliDTO: {
+            url: string;
         };
         SelfAuthInfoDTO: {
             /** Format: uuid */
@@ -488,6 +508,39 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["ParseChipdipDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemDetailsDTO"];
+                };
+            };
+            /** @description Erroneous response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorApiResponse"];
+                };
+            };
+        };
+    };
+    RadetaliController_parse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseRadetaliDTO"];
             };
         };
         responses: {

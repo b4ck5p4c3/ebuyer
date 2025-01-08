@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
         remotePatterns: [
             {
                 hostname: "static.chipdip.ru"
+            },
+            {
+                hostname: "www.radetali.ru"
             }
         ]
     }

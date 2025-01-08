@@ -401,9 +401,56 @@
                         "cookie": []
                     }
                 ],
-                "summary": "Parse chipdip URL/SKU",
+                "summary": "Parse Chipdip URL/SKU",
                 "tags": [
                     "integrations/chipdip"
+                ]
+            }
+        },
+        "/api/integrations/radetali/parse": {
+            "post": {
+                "operationId": "RadetaliController_parse",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ParseRadetaliDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemDetailsDTO"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erroneous response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorApiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookie": []
+                    }
+                ],
+                "summary": "Parse Radetali URL",
+                "tags": [
+                    "integrations/radetali"
                 ]
             }
         },
@@ -646,6 +693,17 @@
                         "type": "string"
                     }
                 }
+            },
+            "ParseRadetaliDTO": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "url"
+                ]
             },
             "SelfAuthInfoDTO": {
                 "type": "object",

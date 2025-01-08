@@ -27,7 +27,7 @@ export default function ShopsLayout({children,}: Readonly<{ children: React.Reac
         if (path === "/shops" && shops.data && shops.data.length > 0) {
             router.push(`/shops/${shops.data[0].internalId}`);
         }
-    }, [shops]);
+    }, [shops, path, router]);
 
     return (
         <div className={"w-9/12 m-auto flex flex-row mt-5 gap-10"}>

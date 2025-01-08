@@ -10,6 +10,7 @@ export class SeederService implements OnModuleInit {
         await this.tryCreateShop("chipdip", "Chip & Dip");
         await this.tryCreateShop("krepkom", "Krepkom");
         await this.tryCreateShop("leroymerlin", "Lemana Pro");
+        await this.tryCreateShop("radetali", "Radetali");
     }
 
     async tryCreateShop(internalId: string, name: string): Promise<void> {
