@@ -2,6 +2,8 @@ import {Injectable} from "@nestjs/common";
 import {ItemDetailsDTO} from "../types";
 import {CustomValidationError} from "../../common/exceptions";
 import {HttpService} from "@nestjs/axios";
+import {verifyUrl} from "../utils";
+import {JSDOM} from "jsdom";
 
 @Injectable()
 export class RadetaliService {
@@ -9,13 +11,7 @@ export class RadetaliService {
     }
 
     isRadetaliProductUrl(url: string): boolean {
-        try {
-            const parsedUrl = new URL(url);
-            return (parsedUrl.hostname === "radetali.ru" || parsedUrl.hostname === "www.radetali.ru") &&
-                !!parsedUrl.pathname.match(/^\/catalog\/product\/([^\/]+?)\/$/);
-        } catch (e) {
-            return false;
-        }
+        return verifyUrl(url, /^((www\.)?)radetali.ru$/, /^\/catalog\/product\/([^\/]+?)\/$/);
     }
 
     async parseMaybeRadetaliUrl(data: string): Promise<ItemDetailsDTO> {
@@ -40,28 +36,21 @@ export class RadetaliService {
             throw new CustomValidationError(`Wrong status from Radetali: ${response.status}/${response.statusText}`);
         }
 
-        const content = response.data as string;
+        const dom = new JSDOM(response.data as string, {
+            url
+        });
+        const document = dom.window.document;
 
-        const fixedContent = content.replace(/[\n\r]/gi, " ");
-
-        const title = (fixedContent.match(/<h1>(.*?) <div/) ?? [])[1];
-        if (!title) {
-            throw new CustomValidationError("Failed to find item title");
-        }
-
-        const sku = (fixedContent.match(/<b itemprop="value" class="product-cart-articul">(\d+)<\/b>/) ?? [])[1];
-        if (!sku) {
-            throw new CustomValidationError("Failed to find item SKU");
-        }
-
-        const imageUrl = (fixedContent.match(/<\/div>(\s*?)<img src="(.*?)" alt="(.*?)" itemprop="thumbnail" id="product_img_/) ?? [])[2];
-
-        const price = (fixedContent.match(/<b class="price">(.*?)<\/b>/) ?? [])[1];
+        const title = (document.querySelector('h1')?.childNodes ?? [])[0]?.textContent?.trim();
+        const sku = document.querySelector('b.product-cart-articul')?.textContent;
+        const imageUrl = (document.querySelector('img[itemprop="thumbnail"]') as HTMLImageElement)?.src;
+        const price = (document.querySelector('b.price') as HTMLSpanElement)?.textContent
+            ?.replaceAll(' ', '');
 
         return {
             title,
             sku,
-            imageUrl: imageUrl ? `https://www.radetali.ru${imageUrl}` : undefined,
+            imageUrl,
             itemUrl: url,
             price
         }

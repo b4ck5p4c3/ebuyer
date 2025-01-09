@@ -3,6 +3,9 @@ import {ItemDetailsDTO} from "../types";
 import {CustomValidationError} from "../../common/exceptions";
 import {HttpService} from "@nestjs/axios";
 import {Agent as HttpsAgent} from "https";
+import {verifyUrl} from "../utils";
+import {JSDOM} from "jsdom";
+import {parseItemDetailsFromLDJSONElements} from "../ldjson";
 
 @Injectable()
 export class KrepkomService {
@@ -10,13 +13,7 @@ export class KrepkomService {
     }
 
     isKrepkomProductUrl(url: string): boolean {
-        try {
-            const parsedUrl = new URL(url);
-            return (parsedUrl.hostname === "krepcom.ru" || parsedUrl.hostname === "www.krepcom.ru") &&
-                !!parsedUrl.pathname.match(/^\/catalog\/([^\/]+?)\/([^\/]+?).htm$/);
-        } catch (e) {
-            return false;
-        }
+        return verifyUrl(url, /^((www\.)?)krepcom.ru$/, /^\/catalog\/([^\/]+?)\/([^\/]+?).htm$/);
     }
 
     async parseMaybeKrepkomUrl(data: string): Promise<ItemDetailsDTO> {
@@ -49,28 +46,18 @@ export class KrepkomService {
             throw new CustomValidationError(`Wrong status from Krepkom: ${response.status}/${response.statusText}`);
         }
 
-        const content = response.data as string;
+        const dom = new JSDOM(response.data as string, {
+            url: originalUrl
+        });
+        const document = dom.window.document;
 
-        const fixedContent = content.replace(/[\n\r]/gi, " ");
-
-        const sku = (fixedContent.match(/<span>Код товара: (.*?) <\/span>/) ?? [])[1];
-
-        const allJsonMatches = fixedContent.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/g);
-
-        for (const match of allJsonMatches) {
-            const data = JSON.parse(match[0].match(/<script type="application\/ld\+json">(.*?)<\/script>/)[1]);
-            if (data["@type"] === "Product") {
-                return {
-                    title: data.name ? String(data.name) : undefined,
-                    sku,
-                    imageUrl: data.image ? `https:${String(data.image)}` : undefined,
-                    itemUrl: originalUrl,
-                    price: data.offers?.price ? String(data.offers?.price) : undefined
-                }
-            }
-        }
+        const sku = (document.querySelector("div.top-line__id > span")?.textContent
+            ?.split("Код товара: ") ?? [])[1]?.trim();
+        const details = parseItemDetailsFromLDJSONElements(document);
 
         return {
+            ...details,
+            sku,
             itemUrl: originalUrl
         };
     }

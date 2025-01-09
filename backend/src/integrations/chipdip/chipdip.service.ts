@@ -3,6 +3,8 @@ import {ItemDetailsDTO} from "../types";
 import {CustomValidationError} from "../../common/exceptions";
 import {HttpService} from "@nestjs/axios";
 import {ConfigService} from "@nestjs/config";
+import {verifyUrl} from "../utils";
+import {JSDOM} from "jsdom";
 
 @Injectable()
 export class ChipdipService {
@@ -13,13 +15,7 @@ export class ChipdipService {
     }
 
     isChipdipProductUrl(url: string): boolean {
-        try {
-            const parsedUrl = new URL(url);
-            return (parsedUrl.hostname === "chipdip.ru" || parsedUrl.hostname === "www.chipdip.ru") &&
-                !!parsedUrl.pathname.match(/^\/product(0?)\/([^\/]+?)$/);
-        } catch (e) {
-            return false;
-        }
+        return verifyUrl(url, /^((www\.)?)chipdip.ru$/, /^\/product(0?)\/([^\/]+?)$/);
     }
 
     isChipdipSku(data: string): boolean {
@@ -54,29 +50,22 @@ export class ChipdipService {
             throw new CustomValidationError(`Wrong status from Chipdip: ${response.status}/${response.statusText}`);
         }
 
-        const content = response.data as string;
+        const dom = new JSDOM(response.data as string, {
+            url
+        });
+        const document = dom.window.document;
 
-        const fixedContent = content.replace(/[\n\r]/gi, " ");
-
-        const title = (fixedContent.match(/<h1 itemprop="name">(.*?)<\/h1>/) ?? [])[1];
-        if (!title) {
-            throw new CustomValidationError("Failed to find item title");
-        }
-
-        const sku = (fixedContent.match(/<meta itemprop="productID" content="sku:(\d+?)">/) ?? [])[1];
-        if (!sku) {
-            throw new CustomValidationError("Failed to find item SKU");
-        }
-
-        const imageUrl = (fixedContent.match(/class="galery"><img src="(.*?)" class="product__image-preview item__image_medium"/) ?? [])[1];
-
-        const price = (fixedContent.match(/<span class="price nw"><span class="price__value">(.*?)<\/span>/) ?? [])[1]
-            ?.replaceAll("&#160;", "");
+        const title = document.querySelector('h1[itemprop="name"]')?.textContent;
+        const sku = ((document.querySelector('meta[itemprop="productID"]') as HTMLMetaElement)?.content
+            ?.split("sku:") ?? [])[1];
+        const imageUrl = (document.querySelector('img.item__image_medium') as HTMLImageElement)?.src;
+        const price = document.querySelector('span.nw > span.price__value')?.textContent
+            ?.replaceAll("\u00a0", "");
 
         return {
             title,
             sku,
-            imageUrl,
+            imageUrl: imageUrl.includes("/noimage/") ? undefined : imageUrl,
             itemUrl: url,
             price
         }

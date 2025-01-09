@@ -9,7 +9,7 @@ export class SeederService implements OnModuleInit {
     async onModuleInit(): Promise<void> {
         await this.tryCreateShop("chipdip", "Chip & Dip");
         await this.tryCreateShop("krepkom", "Krepkom");
-        await this.tryCreateShop("leroymerlin", "Lemana Pro");
+        await this.tryCreateShop("leroy-merlin", "Lemana Pro");
         await this.tryCreateShop("radetali", "Radetali");
     }
 

@@ -501,6 +501,53 @@
                 ]
             }
         },
+        "/api/integrations/leroy-merlin/parse": {
+            "post": {
+                "operationId": "LeroyMerlinController_parse",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ParseLeroyMerlinDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemDetailsDTO"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erroneous response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorApiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookie": []
+                    }
+                ],
+                "summary": "Parse Leroy Merlin (nowadays Lemana Pro) URL",
+                "tags": [
+                    "integrations/leroy-merlin"
+                ]
+            }
+        },
         "/api/auth/self": {
             "get": {
                 "operationId": "AuthController_getSelf",
@@ -753,6 +800,17 @@
                 ]
             },
             "ParseKrepkomDTO": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "url"
+                ]
+            },
+            "ParseLeroyMerlinDTO": {
                 "type": "object",
                 "properties": {
                     "url": {

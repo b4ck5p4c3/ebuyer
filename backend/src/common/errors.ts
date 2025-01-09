@@ -3,4 +3,5 @@ export class Errors {
     static SHOP_NOT_FOUND = "shop-not-found";
     static ITEM_NOT_FOUND = "item-not-found";
     static API_KEY_NOT_FOUND = "api-key-not-found";
+    static API_NOT_IMPLEMENTED = "api-not-implemented";
 }

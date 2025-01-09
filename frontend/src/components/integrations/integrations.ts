@@ -3,6 +3,7 @@ import {ReactNode} from "react";
 import {ChipdipParserFormField} from "@/components/integrations/chipdip/parser";
 import {RadetaliParserFormField} from "@/components/integrations/radetali/parser";
 import {KrepkomParserFormField} from "@/components/integrations/krepkom/parser";
+import {LeroyMerlinParserFormField} from "@/components/integrations/leroy-merlin/parser";
 
 export interface ParserIntegrationProps {
     onParse: (details: ItemDetailsDTO) => void;
@@ -21,5 +22,8 @@ export const INTEGRATIONS: Record<string, Integration> = {
     },
     "krepkom": {
         parser: KrepkomParserFormField
+    },
+    "leroy-merlin": {
+        parser: LeroyMerlinParserFormField
     }
 };
