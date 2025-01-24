@@ -548,6 +548,53 @@
                 ]
             }
         },
+        "/api/integrations/tagradio/parse": {
+            "post": {
+                "operationId": "TagRadioController_parse",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ParseTagRadioDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemDetailsDTO"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Erroneous response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorApiResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookie": []
+                    }
+                ],
+                "summary": "Parse TAGRADIO URL",
+                "tags": [
+                    "integrations/tagradio"
+                ]
+            }
+        },
         "/api/auth/self": {
             "get": {
                 "operationId": "AuthController_getSelf",
@@ -811,6 +858,17 @@
                 ]
             },
             "ParseLeroyMerlinDTO": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "url"
+                ]
+            },
+            "ParseTagRadioDTO": {
                 "type": "object",
                 "properties": {
                     "url": {

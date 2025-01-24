@@ -184,8 +184,25 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Parse Leroy Merlin (now Lemana Pro) URL */
+        /** Parse Leroy Merlin (nowadays Lemana Pro) URL */
         post: operations["LeroyMerlinController_parse"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/integrations/tagradio/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Parse TAGRADIO URL */
+        post: operations["TagRadioController_parse"];
         delete?: never;
         options?: never;
         head?: never;
@@ -275,6 +292,9 @@ export interface components {
             url: string;
         };
         ParseLeroyMerlinDTO: {
+            url: string;
+        };
+        ParseTagRadioDTO: {
             url: string;
         };
         SelfAuthInfoDTO: {
@@ -647,6 +667,39 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["ParseLeroyMerlinDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemDetailsDTO"];
+                };
+            };
+            /** @description Erroneous response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorApiResponse"];
+                };
+            };
+        };
+    };
+    TagRadioController_parse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseTagRadioDTO"];
             };
         };
         responses: {

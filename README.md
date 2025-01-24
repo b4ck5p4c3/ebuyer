@@ -9,3 +9,4 @@ Supports integrations with different shops, for now:
 - [Radetali](https://www.radetali.ru)
 - [Krepkom](https://krepcom.ru) (with hacks for now)
 - [Leroy Merlin/Lemana Pro](https://lemanapro.ru) (not available for now)
+- [TAGGSM](https://taggsm.ru)

@@ -11,6 +11,7 @@ export class SeederService implements OnModuleInit {
         await this.tryCreateShop("krepkom", "Krepkom");
         await this.tryCreateShop("leroy-merlin", "Lemana Pro");
         await this.tryCreateShop("radetali", "Radetali");
+        await this.tryCreateShop("tagradio", "TAGRADIO");
     }
 
     async tryCreateShop(internalId: string, name: string): Promise<void> {

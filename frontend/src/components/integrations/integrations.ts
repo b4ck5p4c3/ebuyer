@@ -4,6 +4,7 @@ import {ChipdipParserFormField} from "@/components/integrations/chipdip/parser";
 import {RadetaliParserFormField} from "@/components/integrations/radetali/parser";
 import {KrepkomParserFormField} from "@/components/integrations/krepkom/parser";
 import {LeroyMerlinParserFormField} from "@/components/integrations/leroy-merlin/parser";
+import {TagRadioParserFormField} from "@/components/integrations/tagradio/parser";
 
 export interface ParserIntegrationProps {
     onParse: (details: ItemDetailsDTO) => void;
@@ -25,5 +26,8 @@ export const INTEGRATIONS: Record<string, Integration> = {
     },
     "leroy-merlin": {
         parser: LeroyMerlinParserFormField
+    },
+    "tagradio": {
+        parser: TagRadioParserFormField
     }
 };
