@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
             },
             {
                 hostname: "user51928.clients-cdnnow.ru" // krepkom
+            },
+            {
+                hostname: "taggsm.ru"
             }
         ]
     }
