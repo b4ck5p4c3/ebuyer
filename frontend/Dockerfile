@@ -1,7 +1,17 @@
-FROM node:21-slim
-COPY package.json package.json
-COPY yarn.lock yarn.lock
-RUN yarn --frozen-lockfile
+# syntax=docker.io/docker/dockerfile:1
+
+FROM node:24-slim AS base
+WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@10 --activate
+
+
+FROM base AS builder
+
+## Install deps
+COPY package.json pnpm-lock.yaml .npmrc  ./
+RUN pnpm i --frozen-lockfile
+
+## Copy rest of the files, and build the app
 COPY . .
-RUN yarn build
-CMD yarn start
+RUN pnpm run build
+CMD pnpm run start
