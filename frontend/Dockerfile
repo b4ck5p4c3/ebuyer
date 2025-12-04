@@ -8,7 +8,7 @@ RUN corepack enable && corepack prepare pnpm@10 --activate
 FROM base AS builder
 
 ## Install deps
-COPY package.json pnpm-lock.yaml .npmrc  ./
+COPY package.json pnpm-lock.yaml  ./
 RUN pnpm i --frozen-lockfile
 
 ## Copy rest of the files, and build the app
